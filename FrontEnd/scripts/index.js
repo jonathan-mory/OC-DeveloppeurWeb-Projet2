@@ -19,3 +19,4 @@ for (let i = 0; i < works.length; i++) {
     // Rattachement de la balise figure au parent "Gallery"
     gallery.appendChild(figure);
 }
+
