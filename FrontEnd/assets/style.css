@@ -123,8 +123,30 @@ li:hover {
 }
 #portfolio h2 {
 	text-align: center;
-	margin-bottom: 1em;
+	margin-bottom: 50px;
 }
+
+.filters-container {
+	width: fit-content;
+	margin: 0 auto 50px auto;
+	display: flex;
+	gap: 10px;
+}
+
+.filters-container button {
+	height: 37px;
+	border: 1px solid #1D6154;
+	border-radius: 60px;
+	color: #1D6154;
+	font: 700 16px "Syne";
+	background-color: white;
+}
+
+.filters-container button:hover {
+	background-color: #1D6154;
+	color: white;
+}
+
 .gallery {
 	width: 100%;
 	display: grid;
