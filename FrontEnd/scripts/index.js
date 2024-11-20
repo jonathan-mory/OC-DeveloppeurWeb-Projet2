@@ -26,45 +26,64 @@ function generateWorks(works) {
 // Premier affichage de la page 
 generateWorks(works);
 
+function createFilterButtons() {
+    // Création du filtre "Tous"
+    const filterAllBtn = document.createElement("button");
+    // Paramètrage du filtre "Tous"
+    filterAllBtn.classList.add("button", "active-button");
+    filterAllBtn.innerText = "Tous";
+    // Récupération de l'élément parent et intégration dans le DOM
+    const filtersContainer = document.querySelector(".filters-container");
+    filtersContainer.appendChild(filterAllBtn);
+    // Ajout de l'écouteur d'événement sur le filtre "Tous"
+    filterAllBtn.addEventListener("click", () => {
+        document.querySelector(".gallery").innerHTML = "";
+        generateWorks(works);
+    });
+    // Création des filtres "Objets", "Appartements" et "Hotels & Restaurants"
+    for (let i = 0; i < categories.length; i++) {
+        const filterBtns = document.createElement("button");
+        filterBtns.id = categories[i].id;
+        filterBtns.classList.add("button");
+        filterBtns.innerText = categories[i].name;
+        filtersContainer.appendChild(filterBtns);
+    };
+    // Ajout de l'écouteur d'événement pour trier les objets
+    const objectsButton = document.getElementById("1");
+    objectsButton.addEventListener("click", () => {
+        const objectWorks = works.filter(work => work.categoryId === 1);
+        document.querySelector(".gallery").innerHTML = "";
+        generateWorks(objectWorks);
+        });
 
-// Création et paramètrage du bouton de filtre "Tous" 
-const filterAllBtn = document.createElement("button");
-filterAllBtn.innerText = "Tous";
-const filtersContainer = document.querySelector(".filters-container");
-filtersContainer.appendChild(filterAllBtn);
-filterAllBtn.addEventListener("click", () => {
-    document.querySelector(".gallery").innerHTML = "";
-    generateWorks(works);
-})
+    // Ajout de l'écouteur d'événement pour trier les appartements
+    const flatsButton = document.getElementById("2");
+    flatsButton.addEventListener("click", () => {
+        const flatWorks = works.filter(work => work.categoryId === 2);
+        document.querySelector(".gallery").innerHTML = "";
+        generateWorks(flatWorks);
+        });
 
-// Création des boutons de filtre "Objets", "Appartements" et "Hotels & Restaurants"
-for (let i = 0; i < categories.length; i++) {
-    const filterBtns = document.createElement("button");
-    filterBtns.id = categories[i].id;
-    filterBtns.innerText = categories[i].name;
-    filtersContainer.appendChild(filterBtns);
+    // Ajout de l'écouteur d'événement pour trier les hotels & restaurants
+    const hotelsAndRestaurantsButton = document.getElementById("3");
+    hotelsAndRestaurantsButton.addEventListener("click", () => {
+        const hotelAndRestaurantWorks = works.filter(work => work.categoryId === 3);
+        document.querySelector(".gallery").innerHTML = "";
+        generateWorks(hotelAndRestaurantWorks);
+    });
 };
 
-// Ajout de l'écouteur d'événement pour trier les objets
-const objectsButton = document.getElementById("1");
-objectsButton.addEventListener("click", () => {
-    const objectWorks = works.filter(work => work.categoryId === 1);
-    document.querySelector(".gallery").innerHTML = "";
-    generateWorks(objectWorks);
+// Génération des boutons de filtres
+createFilterButtons();
+
+function buttonClicked() {
+    document.querySelectorAll("button").forEach(button => {
+        button.classList.remove("active-button");
     });
+    this.classList.add("active-button");
+}
 
-// Ajout de l'écouteur d'événement pour trier les appartements
-const flatsButton = document.getElementById("2");
-flatsButton.addEventListener("click", () => {
-    const flatWorks = works.filter(work => work.categoryId === 2);
-    document.querySelector(".gallery").innerHTML = "";
-    generateWorks(flatWorks);
-    })
-
-// Ajout de l'écouteur d'événement pour trier les hotels & restaurants
-const hotelsAndRestaurantsButton = document.getElementById("3");
-hotelsAndRestaurantsButton.addEventListener("click", () => {
-    const hotelAndRestaurantWorks = works.filter(work => work.categoryId === 3);
-    document.querySelector(".gallery").innerHTML = "";
-    generateWorks(hotelAndRestaurantWorks);
-}) 
+// Modification des styles des boutons de filtre au clic
+document.querySelectorAll(".button").forEach(button => {
+    button.onclick = buttonClicked;
+});
