@@ -87,3 +87,8 @@ function buttonClicked() {
 document.querySelectorAll(".button").forEach(button => {
     button.onclick = buttonClicked;
 });
+
+if (sessionStorage.token) {
+    const loginButton = document.getElementById("login");
+    loginButton.innerText = "logout";
+}
