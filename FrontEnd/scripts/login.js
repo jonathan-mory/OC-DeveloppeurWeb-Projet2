@@ -28,7 +28,7 @@ function manageUserLogin() {
             const loginData = await loginResponse.json();
             sessionStorage.setItem("token", loginData.token);
             window.location.href = "index.html";
-        } else {
+        } else if (loginResponse.status === 401) {
             console.log(`Erreur de l'API ${loginResponse.status} ${loginResponse.statusText}`);
             let loginErrorSpan = document.getElementById("login-error-message");
             if (!loginErrorSpan) {
@@ -36,7 +36,16 @@ function manageUserLogin() {
                 loginErrorSpan.id = "login-error-message";
                 loginForm.appendChild(loginErrorSpan); 
             };
-            loginErrorSpan.innerText = "Identifiants incorrects";
+            loginErrorSpan.innerText = "Mot de passe incorrect";
+        } else if (loginResponse.status === 404) {
+            console.log(`Erreur de l'API ${loginResponse.status} ${loginResponse.statusText}`);
+            let loginErrorSpan = document.getElementById("login-error-message");
+            if (!loginErrorSpan) {
+                loginErrorSpan = document.createElement("span");
+                loginErrorSpan.id = "login-error-message";
+                loginForm.appendChild(loginErrorSpan); 
+            };
+            loginErrorSpan.innerText = "Il n'existe pas de compte avec cette adresse e-mail";
         }
     })
 }
