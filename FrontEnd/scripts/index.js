@@ -20,7 +20,7 @@ function generateWorks(works) {
     const gallery = document.querySelector(".gallery");
     // Rattachement de la balise figure au parent "Gallery"
     gallery.appendChild(figure);
-};
+    };
 }
 
 // Premier affichage de la page 
@@ -88,7 +88,32 @@ document.querySelectorAll(".button").forEach(button => {
     button.onclick = buttonClicked;
 });
 
+// Modification de la page d'accueil en mode édition
 if (sessionStorage.token) {
+    // Modification du menu login/logout en fonction de l'authentification via le token
     const loginButton = document.getElementById("login");
-    loginButton.innerText = "logout";
+    loginButton.innerHTML = "<li>logout</li>";
+    loginButton.addEventListener("click", (event) => {
+        sessionStorage.removeItem("token");
+        event.preventDefault;
+        loginButton.innerHTML = "<li>logout</li>";
+    });
+
+    // Apparition du header "Mode édition"
+    const editionModeDiv = document.createElement("div");
+    editionModeDiv.setAttribute("class", "edition-mode-header");
+    editionModeDiv.innerHTML = `
+    <i class="fa-regular fa-pen-to-square" aria-hidden="true"></i>
+    <a href="">Mode édition</a>`;
+    const headerTag = document.querySelector("header");
+    const headerDiv = document.querySelector(".header");
+    headerTag.insertBefore(editionModeDiv, headerDiv);
+
+    // Apparition du bouton "modifier" dans la section "Mes projets"
+    const portfolioTitleDiv = document.querySelector(".portfolio-title");
+    portfolioTitleDiv.innerHTML = `
+    <h2> Mes Projets </h2>
+    <i class="fa-regular fa-pen-to-square"></i>
+    <a href="">modifier</a>`
+    
 }
