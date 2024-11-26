@@ -104,7 +104,7 @@ if (sessionStorage.token) {
     editionModeDiv.setAttribute("class", "edition-mode-header");
     editionModeDiv.innerHTML = `
     <i class="fa-regular fa-pen-to-square" aria-hidden="true"></i>
-    <a href="">Mode édition</a>`;
+    <a href="#modal" class="js-modal">Mode édition</a>`;
     const headerTag = document.querySelector("header");
     const headerDiv = document.querySelector(".header");
     headerTag.insertBefore(editionModeDiv, headerDiv);
@@ -114,6 +114,5 @@ if (sessionStorage.token) {
     portfolioTitleDiv.innerHTML = `
     <h2> Mes Projets </h2>
     <i class="fa-regular fa-pen-to-square"></i>
-    <a href="">modifier</a>`
-    
+    <a href="#modal" class="js-modal">modifier</a>`    
 }
