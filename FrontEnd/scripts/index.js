@@ -1,14 +1,5 @@
-import { modal, openModal, closeModal } from "./modal.js";
-
-// Récupération des projets de l'architecte depuis le back-end
-const worksApiResponse = await fetch("http://localhost:5678/api/works");
-const works = await worksApiResponse.json();
-const categoriesApiResponse = await fetch("http://localhost:5678/api/categories");
-const categories = await categoriesApiResponse.json();
-categories.unshift({
-    "id": 0,
-    "name": "Tous"
-});
+import { works, categories } from "./apiData.js";
+import { modal, openModal, closeModal, focusInModal } from "./modal.js";
 
 function generateWorks(works) {
     works.forEach((work) => {
@@ -30,7 +21,7 @@ function createFilterButtons() {
     categories.forEach((category) => {
         const filterButton = document.createElement("button");
         filterButton.dataset.categoryId = category.id;
-        filterButton.classList.add("button");
+        filterButton.classList.add("filter-button");
         filterButton.innerText = category.name;
         const filtersContainer = document.querySelector(".filters-container");
         filtersContainer.appendChild(filterButton);
@@ -38,7 +29,7 @@ function createFilterButtons() {
 };
 
 function activateFilterButtons() {
-    const filterButtons = document.querySelectorAll("button")
+    const filterButtons = document.querySelectorAll(".filter-button")
     filterButtons.forEach((filterButton) => {
         filterButton.addEventListener("click", (event) => {
             filterButtons.forEach((filterButton) => {filterButton.classList.remove("active-button")})
@@ -91,3 +82,13 @@ if (sessionStorage.token) {
 document.querySelectorAll(".js-modal").forEach(a => {
     a.addEventListener("click", openModal)
 })
+
+window.addEventListener("keydown", (event) => {
+    if (event.key === "Escape"  || event.key === "Esc") {
+        closeModal(event)
+    }
+    if (event.key === "Tab" && modal !== null) {
+        focusInModal(event)
+    }
+})
+
