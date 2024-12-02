@@ -58,10 +58,11 @@ function generateWorksForModal() {
     works.forEach((work) => {
         // Création de la basile HTML figure et intégration du contenu en HTML 
         const figure = document.createElement("figure");
+        figure.dataset.id = work.id
         figure.innerHTML = 
         `
         <img src="${work.imageUrl}" alt="${work.title}">
-        <button class="delete-button"><i class="fa-solid fa-trash-can"></i></button>
+        <button class="delete-button" data-id="${work.id}"><i class="fa-solid fa-trash-can"></i></button>
         `;
         figure.classList.add("figure-modal")
         // Récupération de l'élément du DOM ("Gallery") qui accueillera les projets
@@ -71,10 +72,38 @@ function generateWorksForModal() {
         });
 }
 
+async function deleteWorks(event) {
+    try {
+        const workId = event.currentTarget.getAttribute("data-id")
+        const token = sessionStorage.getItem("token")
+        const response = await fetch(`http://localhost:5678/api/works/${workId}`, {
+            method: "DELETE",
+            headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+            }
+        })
+        if (response.ok) {
+            console.log('Élément supprimé avec succès');
+            const works = document.querySelectorAll("figure")
+            works.forEach((work) => {
+                if (work.dataset.id === workId) {
+                    work.remove()
+                }
+            })
+        } else {
+            console.error('Erreur lors de la suppression de l\'élément');
+        }
+    } catch (error) {
+        console.error("Erreur réseau ou autre problème", error)
+    }
+}
+
 generateWorksForModal()
 
-const deleteWorkButtons = Array.from(document.querySelectorAll(".delete-button"))
-console.log(deleteWorkButtons)
+const deleteWorkButtons = document.querySelectorAll(".delete-button")
 deleteWorkButtons.forEach((deleteButton) => {
-    
+    deleteButton.addEventListener("click", deleteWorks)
 })
+
+

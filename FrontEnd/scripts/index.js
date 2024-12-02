@@ -5,6 +5,7 @@ function generateWorks(works) {
     works.forEach((work) => {
         // Création de la basile HTML figure et intégration du contenu en HTML 
         const figure = document.createElement("figure");
+        figure.dataset.id = work.id
         figure.innerHTML = 
         `
         <img src="${work.imageUrl}" alt="${work.title}">
