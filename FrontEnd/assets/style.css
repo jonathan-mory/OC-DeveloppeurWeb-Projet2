@@ -124,13 +124,21 @@ label {
 	margin: 2em 0 1em 0;
 }
 
-input {
+input, 
+select {
 	font-size: 1.2em;
 	border: none;
 	box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
 }
 
-#contact textarea {
+input[type="text"],
+input[type="email"],
+input[type="password"],
+select {
+	height: 50px;
+}
+
+textarea {
 	width: 380px;
 	border: none;
 	box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
@@ -267,35 +275,112 @@ footer nav ul {
 
 /* Section Modal */
 
-.modal {
-	position: fixed;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
-	background: rgba(0, 0, 0, 0.8);
-	animation: fadeIn .3s both;
+@keyframes fadeIn {
+	from { opacity: 0; }
+	to { opacity: 1; }
 }
 
-.modal[aria-hidden="true"] {
-	animation-name: fadeOut;
+@keyframes fadeOut {
+	from { opacity: 1; }
+	to { opacity: 0; }
 }
 
-.modal-wrapper {
+@keyframes slideFromTop {
+	from { transform: translateY(-50px); }
+	to { transform: translateY(0px); }
+}
+
+@keyframes slideToBottom {
+	from { transform: translateY(0px); }
+	to { transform: translateY(50px); }
+}
+
+#modal {
+	border: none;
+	border-radius: 10px;
+	animation: slideFromTop .5s both;
+	width: 630px;
+	padding: 0;
+	height: fit-content;
+	overflow: unset;
+}
+
+#modal-window1, 
+#modal-window2 {
+	padding: 60px 105px 45px 105px;
+}
+
+#add-project-form {
+	text-align: left;
+    display: flex;
+    flex-direction: column;
+	width: 420px;
+}
+
+.fa-image {
+	font-size: 60px;
+	color: #B9C5CC;
+}
+
+#file-upload-container {
+	background-color: #E8F1F6;
 	display: flex;
 	flex-direction: column;
-    justify-content: center;
+	justify-content: center;
+	align-items: center;
+	padding: 22px 0;
+	gap: 13px;
+	border-radius: 3px;
+}
+
+#file-input {
+	display: none;
+}
+
+#file-label {
+	display: inline-block;
+	padding: 10px 20px;
+	background-color: #B9C5CC;
+	color: #306685;
+	cursor: pointer;
+	border-radius: 50px;
+	font-size: 14px;
+	font-weight: 500;
+	margin: 0;
+}
+
+.button-container {
+	width: 100%;
+	display: flex;
+	border-top: 1px solid #B3B3B3;
+	margin-top: 47px;
+}
+
+#submit-button {
+	background-color: #A7A7A7;
+	margin: 32px auto 0 auto;
+}
+
+h3 {
+	font: 26px "Work Sans" ;
+	text-align: center;
+	margin-bottom: 46px;
+}
+
+#modal::backdrop {
+	background-color: rgba(0, 0, 0, 0.3);
+	animation: fadeIn .5s both;
+}
+
+.window {
+	display: none;
+}
+
+.window.active {
+	display: flex;
+	flex-direction: column;
     align-items: center;
-	overflow: auto;
-	width: 630px;
-	height: fit-content;
-	border-radius:10px;
-	padding: 60px 105px 45px 105px;
-	background-color: white;
-	animation: slideFromTop .5s both;
+	
 }
 
 #modal-close-button {
@@ -304,6 +389,15 @@ footer nav ul {
 	right: 30px;
 	border: none;
 	background-color: white;
+}
+
+#modal-backward-button {
+	position: absolute;
+    top: 26px;
+    left: 30px;
+    border: none;
+    background-color: white;
+	cursor: pointer;
 }
 
 .fa-xmark {
@@ -315,22 +409,10 @@ footer nav ul {
 	cursor: pointer;
 }
 
-.modal-wrapper h3 {
-	font: 26px "Work Sans" ;
-	text-align: center;
-	margin-bottom: 46px;
-}
-
-.modal[aria-hidden="true"] .modal-wrapper {
-	animation-name: slideToBottom;
-}
-
 .modal-gallery {
 	display: flex;
 	flex-wrap: wrap;
-	padding-bottom: 60px;
 	gap: 10px;
-	border-bottom: 1px solid #B3B3B3  ;
 }
 
 .figure-modal {
@@ -362,26 +444,6 @@ footer nav ul {
 
 #add-picture-button {
 	margin: 40px auto 0 auto;
-}
-
-@keyframes fadeIn {
-	from { opacity: 0; }
-	to { opacity: 1; }
-}
-
-@keyframes fadeOut {
-	from { opacity: 1; }
-	to { opacity: 0; }
-}
-
-@keyframes slideFromTop {
-	from { transform: translateY(-50px); }
-	to { transform: translateY(0px); }
-}
-
-@keyframes slideToBottom {
-	from { transform: translateY(0px); }
-	to { transform: translateY(50px); }
 }
 
 /* Section Contact */

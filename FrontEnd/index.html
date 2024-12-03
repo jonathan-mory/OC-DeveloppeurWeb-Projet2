@@ -9,7 +9,8 @@
 	<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Work+Sans&display=swap" rel="stylesheet">
 	<meta name="description" content="">
 	<link rel="stylesheet" href="./assets/style.css">
-	<script type="module" src="scripts/index.js"></script>
+	<script type="module" src="scripts/index.js" defer></script>
+	<script type="module" src="scripts/modal.js" defer></script>
 	<script src="https://kit.fontawesome.com/e99cd9deac.js" crossorigin="anonymous"></script>
 </head>
 <body>
@@ -42,16 +43,40 @@
 			<div class="portfolio-title">
 				<h2>Mes Projets</h2>
 			</div>
-			<aside id="modal" class="modal" aria-hidden="true" role="dialog" aria-labelledby="titlemodal" style="display: none;">
-				<div class="modal-wrapper js-modal-stop">
+			<dialog id="modal">
+				<div id="modal-window1" class="window">
 					<button id="modal-close-button" class="js-modal-close"><i class="fa-solid fa-xmark"></i></button>
 					<h3>Galerie photo</h3>
-					<div class="modal-gallery">
-						
+					<div class="modal-gallery"></div>
+					<div class="button-container">
+						<input type="button" value="Ajouter une photo" id="add-picture-button">
 					</div>
-					<input type="button" value="Ajouter une photo" id="add-picture-button">
 				</div>
-			</aside>
+				<div id="modal-window2" class="window">
+					<button id="modal-backward-button"><i class="fa-solid fa-arrow-left"></i></button>
+					<button id="modal-close-button" class="js-modal-close"><i class="fa-solid fa-xmark"></i></button>
+					<h3>Ajout photo</h3>
+					<form action="" method="post" id="add-project-form">
+						<div id="file-upload-container">
+							<i class="fa-regular fa-image"></i>
+							<input type="file" id="file-input">
+							<label for="file-input" id="file-label">+ Ajouter photo</label>
+							<span>jpg, png : 4mo max</span>
+						</div>						  
+						<label for="title">Titre</label>
+						<input type="text" name="title" id="title">
+						<label for="category">Catégorie</label>
+						<select name="category" id="category-select">
+							<option value="objects">Objets</option>
+							<option value="flats">Appartements</option>
+							<option value="hotels-and-restaurants">Hotels & restaurants</option>
+						</select>
+						<div class="button-container">
+							<input type="submit" value="Valider" id="submit-button">
+						</div>
+					</form>
+				</div>
+			</dialog>
 			<div class="filters-container">
 			</div>
 			<div class="gallery">

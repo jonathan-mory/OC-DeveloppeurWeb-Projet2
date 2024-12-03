@@ -1,5 +1,4 @@
 import { works, categories } from "./apiData.js";
-import { modal, openModal, closeModal, focusInModal } from "./modal.js";
 
 function generateWorks(works) {
     works.forEach((work) => {
@@ -67,7 +66,7 @@ if (sessionStorage.token) {
     editionModeDiv.setAttribute("class", "edition-mode-header");
     editionModeDiv.innerHTML = `
     <i class="fa-regular fa-pen-to-square" aria-hidden="true"></i>
-    <a href="#modal" class="js-modal">Mode édition</a>`;
+    <a href="#modal" class="js-modal-open">Mode édition</a>`;
     const headerTag = document.querySelector("header");
     const headerDiv = document.querySelector(".header");
     headerTag.insertBefore(editionModeDiv, headerDiv);
@@ -77,19 +76,5 @@ if (sessionStorage.token) {
     portfolioTitleDiv.innerHTML = `
     <h2> Mes Projets </h2>
     <i class="fa-regular fa-pen-to-square"></i>
-    <a href="#modal" class="js-modal">modifier</a>`    
+    <a href="#modal" class="js-modal-open">modifier</a>`    
 }
-
-document.querySelectorAll(".js-modal").forEach(a => {
-    a.addEventListener("click", openModal)
-})
-
-window.addEventListener("keydown", (event) => {
-    if (event.key === "Escape"  || event.key === "Esc") {
-        closeModal(event)
-    }
-    if (event.key === "Tab" && modal !== null) {
-        focusInModal(event)
-    }
-})
-
