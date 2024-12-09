@@ -1,80 +1,82 @@
-import { works, categories } from "./apiData.js";
+import { fetchWorks, fetchCategories } from "./apiData.js";
 
-function generateWorks(works) {
+export function displayWorks(works) {
+    const gallery = document.querySelector(".gallery");
+    gallery.innerHTML = "";
     works.forEach((work) => {
-        // Création de la basile HTML figure et intégration du contenu en HTML 
         const figure = document.createElement("figure");
-        figure.dataset.id = work.id
-        figure.innerHTML = 
-        `
-        <img src="${work.imageUrl}" alt="${work.title}">
-        <figcaption>${work.title}</figcaption>
+        figure.dataset.id = work.id;
+        figure.innerHTML = `
+            <img src="${work.imageUrl}" alt="${work.title}">
+            <figcaption>${work.title}</figcaption>
         `;
-        // Récupération de l'élément du DOM ("Gallery") qui accueillera les projets
-        const gallery = document.querySelector(".gallery");
-        // Rattachement de la balise figure au parent "Gallery"
         gallery.appendChild(figure);
-        });
+    });
 }
 
-function createFilterButtons() {
+function displayFilterButtons(categories) {
+    const filtersContainer = document.querySelector(".filters-container");
     categories.forEach((category) => {
+        // Création des boutons de filtre
         const filterButton = document.createElement("button");
         filterButton.dataset.categoryId = category.id;
         filterButton.classList.add("filter-button");
         filterButton.innerText = category.name;
-        const filtersContainer = document.querySelector(".filters-container");
         filtersContainer.appendChild(filterButton);
-    });
-};
-
-function activateFilterButtons() {
-    const filterButtons = document.querySelectorAll(".filter-button")
-    filterButtons.forEach((filterButton) => {
+        // Activation des boutons de filtre
         filterButton.addEventListener("click", (event) => {
-            filterButtons.forEach((filterButton) => {filterButton.classList.remove("active-button")})
+            document.querySelector(".filter-button.active-button")?.classList.remove("active-button");
             event.target.classList.add("active-button")
             const selectedFilter = parseInt(event.target.dataset.categoryId);
             const filteredWorks = works.filter((work) => work.categoryId === selectedFilter)
-            document.querySelector(".gallery").innerHTML = "";
-            if (selectedFilter >= 1) {
-                generateWorks(filteredWorks)
-            } else {
-                generateWorks(works)
-            }
+            displayWorks(selectedFilter >= 1 ? filteredWorks : works)
         })
+    });
+};
+
+function modifyLoginLogout() {
+    const loginButton = document.getElementById("login")
+    loginButton.innerHTML = "<li>logout</li>"
+    loginButton.addEventListener("click", () => {
+        sessionStorage.removeItem("token")
     })
 }
 
-generateWorks(works);
-createFilterButtons();
-activateFilterButtons();
-
-// Modification de la page d'accueil en mode édition
-if (sessionStorage.token) {
-    // Modification du menu login/logout en fonction de l'authentification via le token
-    const loginButton = document.getElementById("login");
-    loginButton.innerHTML = "<li>logout</li>";
-    loginButton.addEventListener("click", (event) => {
-        sessionStorage.removeItem("token");
-        event.preventDefault;
-        loginButton.innerHTML = "<li>logout</li>";
-    });
-
-    // Apparition du header "Mode édition"
+function displayEditionBar() {
+    const headerTag = document.querySelector("header");
+    const headerDiv = document.querySelector(".header");
     const editionModeDiv = document.createElement("div");
     editionModeDiv.setAttribute("class", "edition-mode-header");
     editionModeDiv.innerHTML = `
-    <i class="fa-regular fa-pen-to-square" aria-hidden="true"></i>
-    <a href="#modal" class="js-modal-open">Mode édition</a>`;
-    const headerTag = document.querySelector("header");
-    const headerDiv = document.querySelector(".header");
+        <i class="fa-regular fa-pen-to-square" aria-hidden="true"></i>
+        <a href="#modal" class="js-modal-open">Mode édition</a>
+    `;
     headerTag.insertBefore(editionModeDiv, headerDiv);
+}
 
-    // Apparition du bouton "modifier" dans la section "Mes projets"
+function displayModifyButton(params) {
     const portfolioTitleDiv = document.querySelector(".portfolio-title");
     portfolioTitleDiv.innerHTML = `
-    <h2> Mes Projets </h2>
-    <i class="fa-regular fa-pen-to-square"></i>
-    <a href="#modal" class="js-modal-open">modifier</a>`    
+        <h2> Mes Projets </h2>
+        <i class="fa-regular fa-pen-to-square"></i>
+        <a href="#modal" class="js-modal-open">modifier</a>
+    `    
+}
+
+fetchWorks().then(works => {
+    displayWorks(works); // Affiche la liste des travaux une fois la promesse résolue
+});
+
+fetchCategories()
+
+if (!sessionStorage.token) {
+    displayFilterButtons(categories);
+    // Initialisation du filtrage sur le bouton "Tous"
+    document.querySelector('[data-category-id="0"]').classList.add("active-button");
+}
+
+if (sessionStorage.token) {
+    modifyLoginLogout()
+    displayEditionBar()
+    displayModifyButton()
 }

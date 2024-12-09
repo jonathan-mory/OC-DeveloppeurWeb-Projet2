@@ -1,54 +1,49 @@
+import { baseURL } from "./urlBaseApi.js";
+import { displayErrorMessage } from "./test.js";
 // Récupération des éléments du DOM
 const loginForm = document.getElementById("login-form");
-const emailInput = document.getElementById("login-email");
-const passwordInput = document.getElementById("login-password");
 
+function getFormData() {
+    const emailInput = document.getElementById("login-email");
+    const passwordInput = document.getElementById("login-password");
+    const formData = {
+        email: emailInput.value,
+        password: passwordInput.value
+    };
+    return JSON.stringify(formData);
+}
+
+async function handleLoginResponse(loginResponse) {
+    if (loginResponse.ok) {
+        const loginData = await loginResponse.json();
+        sessionStorage.setItem("token", loginData.token);
+        window.location.href = "index.html";
+    } else {
+        const errorMessage = loginResponse.status === 401
+            ? "Mot de passe incorrect"
+            : loginResponse.status === 404
+                ? "Il n'existe pas de compte avec cette adresse e-mail"
+                : "Une erreur est survenue. Veuillez réessayer.";
+        displayErrorMessage(errorMessage, loginForm);
+    }
+}
 
 function manageUserLogin() {
-    // Ajout de l'écouteur d'événement pour gérer le login 
     loginForm.addEventListener("submit", async (event) => {
-        // Empêcher le rechargement par défaut 
         event.preventDefault();
-        // Création de la charge utile avec l'objet de la nouvelle connexion
-        const userLog = {
-            email: emailInput.value,
-            password: passwordInput.value
-        };
-        // Conversion de la charge utile au format JSON
-        const chargeUtile = JSON.stringify(userLog);
-        // Appel de la fonction fetch avec toutes les informations nécessaires
-        const loginResponse = await fetch("http://localhost:5678/api/users/login", {
-            method: "POST",
-            headers: { "Content-type": "application/json" },
-            body: chargeUtile
-        });
-        console.log(loginResponse);
-        // Gestion de l'authentification 
-        if (loginResponse.ok) {
-            const loginData = await loginResponse.json();
-            sessionStorage.setItem("token", loginData.token);
-            window.location.href = "index.html";
-        } else if (loginResponse.status === 401) {
-            console.log(`Erreur de l'API ${loginResponse.status} ${loginResponse.statusText}`);
-            let loginErrorSpan = document.getElementById("login-error-message");
-            if (!loginErrorSpan) {
-                loginErrorSpan = document.createElement("span");
-                loginErrorSpan.id = "login-error-message";
-                loginForm.appendChild(loginErrorSpan); 
-            };
-            loginErrorSpan.innerText = "Mot de passe incorrect";
-        } else if (loginResponse.status === 404) {
-            console.log(`Erreur de l'API ${loginResponse.status} ${loginResponse.statusText}`);
-            let loginErrorSpan = document.getElementById("login-error-message");
-            if (!loginErrorSpan) {
-                loginErrorSpan = document.createElement("span");
-                loginErrorSpan.id = "login-error-message";
-                loginForm.appendChild(loginErrorSpan); 
-            };
-            loginErrorSpan.innerText = "Il n'existe pas de compte avec cette adresse e-mail";
+        const chargeUtile = getFormData();
+        try {
+            const loginResponse = await fetch(`${baseURL}users/login`, {
+                method: "POST",
+                headers: { "Content-type": "application/json" },
+                body: chargeUtile
+            });
+            await handleLoginResponse(loginResponse);
+        } catch (error) {
+            console.error("Erreur de connexion :", error);
+            displayErrorMessage("Une erreur de connexion est survenue. Veuillez réessayer.");
         }
-    })
+    });
 }
 
 manageUserLogin();
-

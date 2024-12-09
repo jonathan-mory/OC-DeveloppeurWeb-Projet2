@@ -269,8 +269,9 @@ footer nav ul {
 }
 
 .gallery img {
-	width: 100%;
-
+	width: 304px;
+    height: 407px;
+    object-fit: cover;
 }
 
 /* Section Modal */
@@ -328,9 +329,23 @@ footer nav ul {
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
-	padding: 22px 0;
 	gap: 13px;
 	border-radius: 3px;
+	position: relative;
+	height: 169px;
+	padding: 10px;
+}
+
+.image-container {
+	position: relative;
+	height: 100%;
+	width: 130px;
+}
+
+#preview {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
 }
 
 #file-input {
@@ -357,8 +372,11 @@ footer nav ul {
 }
 
 #submit-button {
-	background-color: #A7A7A7;
 	margin: 32px auto 0 auto;
+}
+
+#submit-button.disabled-button {
+	background-color: #A7A7A7;
 }
 
 h3 {
@@ -423,6 +441,7 @@ h3 {
 .modal-gallery img {
 	width: 100%;
 	height: 100%;
+	object-fit: cover;
 }
 
 .delete-button {
@@ -490,9 +509,13 @@ h3 {
 	flex-direction: column;	
 }
 
-#login-error-message {
+.error-message {
 	color: red;
 	text-align: center;
 	font-size: 16px;
+}
+
+#file-upload-container .error-message {
+	font-size: 14px;
 }
 

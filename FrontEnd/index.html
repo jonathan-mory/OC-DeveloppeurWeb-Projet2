@@ -44,7 +44,7 @@
 				<h2>Mes Projets</h2>
 			</div>
 			<dialog id="modal">
-				<div id="modal-window1" class="window">
+				<div id="modal-window1" class="window active">
 					<button id="modal-close-button" class="js-modal-close"><i class="fa-solid fa-xmark"></i></button>
 					<h3>Galerie photo</h3>
 					<div class="modal-gallery"></div>
@@ -56,23 +56,25 @@
 					<button id="modal-backward-button"><i class="fa-solid fa-arrow-left"></i></button>
 					<button id="modal-close-button" class="js-modal-close"><i class="fa-solid fa-xmark"></i></button>
 					<h3>Ajout photo</h3>
-					<form action="" method="post" id="add-project-form">
+					<form action="" method="post" id="add-project-form" name="add-project-form">
 						<div id="file-upload-container">
+							<div class="image-container" style="display: none;">
+								<img id="preview" src="" alt="Aperçu de l'image">
+								<button class="delete-button"><i class="fa-solid fa-trash-can" aria-hidden="true"></i></button>
+							</div>
 							<i class="fa-regular fa-image"></i>
-							<input type="file" id="file-input">
+							<input type="file" name="image" id="file-input" accept=".jpg, .jpeg, .png" required>
 							<label for="file-input" id="file-label">+ Ajouter photo</label>
 							<span>jpg, png : 4mo max</span>
 						</div>						  
 						<label for="title">Titre</label>
-						<input type="text" name="title" id="title">
+						<input type="text" name="title" id="title-input" required>
 						<label for="category">Catégorie</label>
-						<select name="category" id="category-select">
-							<option value="objects">Objets</option>
-							<option value="flats">Appartements</option>
-							<option value="hotels-and-restaurants">Hotels & restaurants</option>
+						<select name="category" id="category-select" required>
+							<option value="" disabled selected hidden></option>
 						</select>
 						<div class="button-container">
-							<input type="submit" value="Valider" id="submit-button">
+							<input type="submit" value="Valider" id="submit-button" class="disabled-button">
 						</div>
 					</form>
 				</div>

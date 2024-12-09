@@ -1,10 +1,37 @@
-// Récupération des projets de l'architecte depuis le back-end
-const worksApiResponse = await fetch("http://localhost:5678/api/works");
-export const works = await worksApiResponse.json();
+import { baseURL } from "./urlBaseApi.js";
 
-const categoriesApiResponse = await fetch("http://localhost:5678/api/categories");
+/* const worksApiResponse = await fetch(`${baseURL}works`);
+export const works = await worksApiResponse.json();
+ */
+
+export async function fetchWorks() {
+    try {
+        let response = await fetch(`${baseURL}works`);
+        let works = await response.json();
+        return works;
+    } catch (error) {
+        console.error("Erreur lors de la récupération des projets :", error);
+        return null;
+    }
+}
+
+export async function fetchCategories() {
+    try {
+        let response = await fetch(`${baseURL}categories`);
+        let categories = await response.json();
+        categories.unshift({
+            "id": 0,
+            "name": "Tous"
+        });
+        return categories;
+    } catch (error) {
+        console.error("Erreur lors de la récupération des catégories :", error)
+    }
+}
+
+/* const categoriesApiResponse = await fetch(`${baseURL}categories`);
 export const categories = await categoriesApiResponse.json();
 categories.unshift({
     "id": 0,
     "name": "Tous"
-});
+}); */
