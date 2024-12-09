@@ -1,6 +1,7 @@
-import { fetchWorks, fetchCategories } from "./apiData.js";
+import * as api from "./api.js";
+import * as modal from "./modal.js"
 
-export function displayWorks(works) {
+function displayWorks(works) {
     const gallery = document.querySelector(".gallery");
     gallery.innerHTML = "";
     works.forEach((work) => {
@@ -63,13 +64,13 @@ function displayModifyButton(params) {
     `    
 }
 
-fetchWorks().then(works => {
-    displayWorks(works); // Affiche la liste des travaux une fois la promesse résolue
-});
+let works = await api.getWorks();
+let categories = await api.getCategories();
 
-fetchCategories()
+displayWorks(works)
 
 if (!sessionStorage.token) {
+    
     displayFilterButtons(categories);
     // Initialisation du filtrage sur le bouton "Tous"
     document.querySelector('[data-category-id="0"]').classList.add("active-button");
@@ -79,4 +80,34 @@ if (sessionStorage.token) {
     modifyLoginLogout()
     displayEditionBar()
     displayModifyButton()
+    modal.openModal()
+    modal.closeModal()
+    modal.generateWorksForModal(works)
+    modal.addDeleteEventListeners()
+    modal.switchModalWindow()
+    modal.checkAndDisplayUploadFile()
+    modal.generateCategorieOptions(categories)
+    modal.checkFormValidity()
+
+    // Ajouter des écouteurs d'événements à chaque champ requis
+    modal.addWorkInputs.forEach(input => {
+        input.addEventListener("input", modal.checkFormValidity);
+    });
+
+    // Gestion de l'envoi du formulaire pour ajouter des projets
+    modal.addWorkForm.addEventListener("submit", async (event) => {
+        event.preventDefault()
+        let response = await api.postWork(modal.addWorkForm)
+        if (response.status === 201) {
+            let updatedWorks = await api.getWorks()
+            displayWorks(updatedWorks)
+            modal.resetUploadContainer()
+            modal.addWorkForm.reset()
+            modal.checkFormValidity()
+            modal.switchWindow(modal.modalWindow1, modal.modalWindow2)
+            modal.generateWorksForModal(updatedWorks)
+            modal.addDeleteEventListeners()
+            modal.dialog.close()
+        }
+    })
 }

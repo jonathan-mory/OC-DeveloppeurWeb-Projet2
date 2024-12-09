@@ -1,6 +1,6 @@
-import { baseURL } from "./urlBaseApi.js";
+import { postUsersLogin } from "./api.js";
 import { displayErrorMessage } from "./test.js";
-// Récupération des éléments du DOM
+
 const loginForm = document.getElementById("login-form");
 
 function getFormData() {
@@ -31,18 +31,9 @@ async function handleLoginResponse(loginResponse) {
 function manageUserLogin() {
     loginForm.addEventListener("submit", async (event) => {
         event.preventDefault();
-        const chargeUtile = getFormData();
-        try {
-            const loginResponse = await fetch(`${baseURL}users/login`, {
-                method: "POST",
-                headers: { "Content-type": "application/json" },
-                body: chargeUtile
-            });
-            await handleLoginResponse(loginResponse);
-        } catch (error) {
-            console.error("Erreur de connexion :", error);
-            displayErrorMessage("Une erreur de connexion est survenue. Veuillez réessayer.");
-        }
+        let chargeUtile = getFormData();
+        let loginResponse = await postUsersLogin(chargeUtile);
+        handleLoginResponse(loginResponse);
     });
 }
 
