@@ -1,0 +1,19 @@
+.edition-mode-header {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	gap: 10px;
+	height: 60px;
+	background-color: black;
+}
+
+.edition-mode-header a,
+.edition-mode-header i {
+	color: white;
+}
+
+.header {
+	display: flex;
+	justify-content: space-between;
+	margin: 50px 150px 140px 150px;
+}

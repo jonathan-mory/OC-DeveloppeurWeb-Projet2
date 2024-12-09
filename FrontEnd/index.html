@@ -8,6 +8,8 @@
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Work+Sans&display=swap" rel="stylesheet">
 	<meta name="description" content="">
+	<link rel="stylesheet" href="./assets/main.css">
+	<link rel="stylesheet" href="./assets/header.css">
 	<link rel="stylesheet" href="./assets/style.css">
 	<script type="module" src="scripts/index.js" defer></script>
 	<script src="https://kit.fontawesome.com/e99cd9deac.js" crossorigin="anonymous"></script>
@@ -18,9 +20,9 @@
 			<h1>Sophie Bluel <span>Architecte d'intérieur</span></h1>
 			<nav>
 				<ul>
-					<a href="#portfolio"><li>projets</li></a>
-					<a href="#contact"><li>contact</li></a>
-					<a href="login.html" id="login"><li>login</li></a>
+					<li><a href="#portfolio">Projets</a></li>
+					<li><a href="#contact">Contact</a></li>
+					<li><a href="login.html" id="login">Login</a></li>
 					<li><img src="./assets/icons/instagram.png" alt="Instagram"></li>
 				</ul>
 			</nav>
@@ -44,7 +46,7 @@
 			</div>
 			<dialog id="modal">
 				<div id="modal-window1" class="window active">
-					<button id="modal-close-button" class="js-modal-close"><i class="fa-solid fa-xmark"></i></button>
+					<button id="modal-close-button" class="js-modal-close" aria-label="Fermer la fenêtre"><i class="fa-solid fa-xmark"></i></button>
 					<h3>Galerie photo</h3>
 					<div class="modal-gallery"></div>
 					<div class="button-container">
@@ -52,14 +54,14 @@
 					</div>
 				</div>
 				<div id="modal-window2" class="window">
-					<button id="modal-backward-button"><i class="fa-solid fa-arrow-left"></i></button>
-					<button id="modal-close-button" class="js-modal-close"><i class="fa-solid fa-xmark"></i></button>
+					<button id="modal-backward-button" aria-label="Revenir sur la fenêtre précédente"><i class="fa-solid fa-arrow-left"></i></button>
+					<button id="modal-close-button" class="js-modal-close" aria-label="Fermer la fenêtre"><i class="fa-solid fa-xmark"></i></button>
 					<h3>Ajout photo</h3>
 					<form action="" method="post" id="add-project-form" name="add-project-form">
 						<div id="file-upload-container">
 							<div class="image-container" style="display: none;">
 								<img id="preview" src="" alt="Aperçu de l'image">
-								<button class="delete-button"><i class="fa-solid fa-trash-can" aria-hidden="true"></i></button>
+								<button class="delete-button" aria-label="Supprimer l'image"><i class="fa-solid fa-trash-can" aria-hidden="true"></i></button>
 							</div>
 							<i class="fa-regular fa-image"></i>
 							<input type="file" name="image" id="file-input" accept=".jpg, .jpeg, .png" required>
@@ -67,9 +69,9 @@
 							<span>jpg, png : 4mo max</span>
 						</div>						  
 						<label for="title">Titre</label>
-						<input type="text" name="title" id="title-input" required>
+						<input type="text" name="title" title="Titre" id="title-input" required>
 						<label for="category">Catégorie</label>
-						<select name="category" id="category-select" required>
+						<select name="category" title="Catégorie" id="category-select" required>
 							<option value="" disabled selected hidden></option>
 						</select>
 						<div class="button-container">

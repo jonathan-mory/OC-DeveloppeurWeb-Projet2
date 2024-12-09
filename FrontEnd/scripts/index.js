@@ -37,7 +37,7 @@ function displayFilterButtons(categories) {
 
 function modifyLoginLogout() {
     const loginButton = document.getElementById("login")
-    loginButton.innerHTML = "<li>logout</li>"
+    loginButton.innerText = "Logout"
     loginButton.addEventListener("click", () => {
         sessionStorage.removeItem("token")
     })

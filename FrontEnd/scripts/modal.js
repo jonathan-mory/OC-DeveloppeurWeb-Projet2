@@ -26,7 +26,7 @@ export function generateWorksForModal(works) {
         figure.dataset.id = work.id
         figure.innerHTML = `
             <img src="${work.imageUrl}" alt="${work.title}">
-            <button class="delete-button" data-id="${work.id}"><i class="fa-solid fa-trash-can"></i></button>
+            <button class="delete-button" data-id="${work.id}" aria-label="Supprimer le projet"><i class="fa-solid fa-trash-can"></i></button>
         `;
         figure.classList.add("figure-modal")
         modalGallery.appendChild(figure);
