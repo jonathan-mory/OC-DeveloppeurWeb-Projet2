@@ -1,16 +1,23 @@
 import * as api from "./api.js";
 import * as modal from "./modal.js"
 
-function displayWorks(works) {
+export function displayWorks(works) {
     const gallery = document.querySelector(".gallery");
     gallery.innerHTML = "";
     works.forEach((work) => {
-        const figure = document.createElement("figure");
-        figure.dataset.id = work.id;
-        figure.innerHTML = `
-            <img src="${work.imageUrl}" alt="${work.title}">
-            <figcaption>${work.title}</figcaption>
-        `;
+        const img = document.createElement("img")
+        img.className = "work-img"
+        img.src = work.imageUrl
+        img.alt = work.title
+
+        const figcaption = document.createElement("figcaption")
+        figcaption.innerText = work.title
+
+        const figure = document.createElement("figure")
+        figure.dataset.id = work.id
+
+        figure.appendChild(img)
+        figure.appendChild(figcaption)
         gallery.appendChild(figure);
     });
 }
@@ -29,8 +36,8 @@ function displayFilterButtons(categories) {
             document.querySelector(".filter-button.active-button")?.classList.remove("active-button");
             event.target.classList.add("active-button")
             const selectedFilter = parseInt(event.target.dataset.categoryId);
-            const filteredWorks = works.filter((work) => work.categoryId === selectedFilter)
-            displayWorks(selectedFilter >= 1 ? filteredWorks : works)
+            const filteredWorks = api.works.filter((work) => work.categoryId === selectedFilter)
+            displayWorks(selectedFilter >= 1 ? filteredWorks : api.works)
         })
     });
 };
@@ -64,14 +71,10 @@ function displayModifyButton(params) {
     `    
 }
 
-let works = await api.getWorks();
-let categories = await api.getCategories();
-
-displayWorks(works)
+displayWorks(api.works)
 
 if (!sessionStorage.token) {
-    
-    displayFilterButtons(categories);
+    displayFilterButtons(api.categories);
     // Initialisation du filtrage sur le bouton "Tous"
     document.querySelector('[data-category-id="0"]').classList.add("active-button");
 }
@@ -80,34 +83,9 @@ if (sessionStorage.token) {
     modifyLoginLogout()
     displayEditionBar()
     displayModifyButton()
-    modal.openModal()
-    modal.closeModal()
-    modal.generateWorksForModal(works)
-    modal.addDeleteEventListeners()
-    modal.switchModalWindow()
-    modal.checkAndDisplayUploadFile()
-    modal.generateCategorieOptions(categories)
-    modal.checkFormValidity()
-
+    modal.initModal()
     // Ajouter des écouteurs d'événements à chaque champ requis
     modal.addWorkInputs.forEach(input => {
         input.addEventListener("input", modal.checkFormValidity);
     });
-
-    // Gestion de l'envoi du formulaire pour ajouter des projets
-    modal.addWorkForm.addEventListener("submit", async (event) => {
-        event.preventDefault()
-        let response = await api.postWork(modal.addWorkForm)
-        if (response.status === 201) {
-            let updatedWorks = await api.getWorks()
-            displayWorks(updatedWorks)
-            modal.resetUploadContainer()
-            modal.addWorkForm.reset()
-            modal.checkFormValidity()
-            modal.switchWindow(modal.modalWindow1, modal.modalWindow2)
-            modal.generateWorksForModal(updatedWorks)
-            modal.addDeleteEventListeners()
-            modal.dialog.close()
-        }
-    })
 }

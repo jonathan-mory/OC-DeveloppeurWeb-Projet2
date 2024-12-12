@@ -1,5 +1,5 @@
 import { postUsersLogin } from "./api.js";
-import { displayErrorMessage } from "./test.js";
+import { displayErrorMessage } from "./generic.js";
 
 const loginForm = document.getElementById("login-form");
 

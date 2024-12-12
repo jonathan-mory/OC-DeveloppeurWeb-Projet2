@@ -41,9 +41,8 @@ export async function postUsersLogin(chargeUtile) {
     }
 }
 
-export async function deleteWork(event) {
+export async function deleteWork(workId) {
     try {
-        const workId = event.currentTarget.getAttribute("data-id")
         const response = await fetch(`${worksURL}/${workId}`, {
             method: "DELETE",
             headers: {
@@ -54,9 +53,7 @@ export async function deleteWork(event) {
         if (response.ok) {
             const works = document.querySelectorAll("figure")
             works.forEach((work) => {
-                if (work.dataset.id === workId) {
-                    work.remove()
-                }
+                work.dataset.id === workId ? work.remove() : null
             })
         } else {
             console.error("Erreur lors de la suppression de l\'élément");
@@ -83,3 +80,5 @@ export async function postWork(form) {
     }
 }
 
+export let works = await getWorks();
+export let categories = await getCategories();

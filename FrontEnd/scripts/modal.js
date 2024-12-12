@@ -1,5 +1,6 @@
 import * as api from "./api.js"
-import { displayErrorMessage } from "./test.js";
+import { displayWorks } from "./index.js";
+import { displayErrorMessage } from "./generic.js";
 
 export const dialog = document.getElementById("modal");
 export const modalWindow1 = document.getElementById("modal-window1")
@@ -9,60 +10,146 @@ export const addWorkInputs = addWorkForm.querySelectorAll("input[required], sele
 const beforeUploadContent = document.querySelectorAll("#file-upload-container div ~ *")
 const afterUploadContainer = document.querySelector(".image-container")
 
-export function openModal() {
+/**
+ * Initialise la modale en y ajoutant toutes les fonctionnalités nécessaires (génération de la galerie des travaux à chaque ouverture, fonctionnalités génériques, gestion du formulaire d'ajout de projet)
+ */
+export function initModal() {
     const openModalButtons = document.querySelectorAll(".js-modal-open");
     openModalButtons.forEach((button) => {
-    button.addEventListener("click", () => {
-        dialog.showModal()
+        button.addEventListener("click", async () => {
+            modalWindow1.className === "window active" ? null : switchWindow(modalWindow1)
+            const updatedWorks = await api.getWorks()
+            initModalGallery(updatedWorks)
+            dialog.showModal()
+        })
     })
-})
+    initModalSettings()
+    initModalForm()
 }
 
-export function generateWorksForModal(works) {
+export function checkFormValidity() {
+    const submitButton = document.getElementById("submit-button");
+    let allFilled = true;
+    addWorkInputs.forEach(input => {
+        if (!input.value) {
+            allFilled = false;
+        }
+    });
+    if (allFilled) {
+        submitButton.classList.remove("disabled-button")
+        submitButton.classList.add("active-button")
+    } else {
+        submitButton.classList.add("disabled-button")
+        submitButton.classList.remove("active-button")
+    } 
+}
+
+/**
+ * Super fonction qui est appelée après validation du formulaire. Elle réinitialise intégralement le formulaire, bascule sur la première fenêtre de la modale et ferme la modale.  
+ */
+function resetModal() {
+    resetUploadContainer()
+    addWorkForm.reset()
+    checkFormValidity()
+    switchWindow(modalWindow1)
+    dialog.close()
+}
+
+/**
+ * Change l'affichage de la modale en fonction de la fenêtre à afficher
+ * 
+ * @param {HTMLDialogElement} idModalWindow - La fenêtre de modale que l'on souhaite afficher
+ */
+function switchWindow(idModalWindow) {
+    dialog.querySelectorAll(".window")
+    .forEach((window) => {
+        window === idModalWindow ? window.classList.add("active") : window.classList.remove("active")
+    })
+}
+
+/**
+ * Itinialise les fonctionnalités génériques de la modale pour la fermer ou changer de fenêtre. 
+ */
+function initModalSettings() {
+    // Fermer la modale en cliquant sur le bouton
+    const closeModalButtons = dialog.querySelectorAll(".js-modal-close");
+    closeModalButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+            dialog.close()
+        })
+    })
+    // Fermer la modale en cliquant sur l'overlay
+    dialog.addEventListener('click', (event) => {
+        event.target === dialog ? dialog.close() : null
+    });
+    // Afficher la fenêtre 2
+    dialog.querySelector("#add-picture-button")
+    .addEventListener("click", () => {
+        switchWindow(modalWindow2)
+    })
+    // Afficher la fenêtre 1
+    dialog.querySelector("#modal-backward-button")
+    .addEventListener("click", () => {
+        switchWindow(modalWindow1)
+    })
+}
+
+/**
+ * Affiche les projets dans la modale et implémente l'écouteur d'événement sur chaque bouton pour supprimer des projets
+ * 
+ * @param {Array} works - Un tableau de projets récupéré à partir de la requête "Get Works" à l'API
+ */
+function initModalGallery(works) {
     const modalGallery = document.querySelector(".modal-gallery");
     modalGallery.innerHTML = "";
     works.forEach((work) => {
-        const figure = document.createElement("figure");
+        // Création des éléments HTML pour accueillir les projets
+        const i = document.createElement("i")
+        i.className = "fa-solid fa-trash-can"
+
+        const button = document.createElement("button")
+        button.className = "delete-button"
+        button.ariaLabel = "Supprimer le projet"
+
+        const img = document.createElement("img")
+        img.src = work.imageUrl
+        img.alt = work.title
+
+        const figure = document.createElement("figure")
+        figure.className = "figure-modal"
         figure.dataset.id = work.id
-        figure.innerHTML = `
-            <img src="${work.imageUrl}" alt="${work.title}">
-            <button class="delete-button" data-id="${work.id}" aria-label="Supprimer le projet"><i class="fa-solid fa-trash-can"></i></button>
-        `;
-        figure.classList.add("figure-modal")
-        modalGallery.appendChild(figure);
+
+        // Imbrication des éléments HTML 
+        button.appendChild(i)
+        figure.appendChild(img)
+        figure.appendChild(button)
+        modalGallery.appendChild(figure)
+
+        // Ajout de la fonction de suppression d'un projet à chaque bouton
+        button.addEventListener("click", async () => {
+            api.deleteWork(work.id)
+            const updatedWorks = await api.getWorks()
+            displayWorks(updatedWorks)
+            initModalGallery(updatedWorks)
+        })
     });
 }
 
-export function addDeleteEventListeners() {
-    // Ajout de la fonction "deleteWork" à tous les boutons pour supprimer des projets
-    document.querySelectorAll(".figure-modal .delete-button")
-    .forEach((deleteButton) => {
-        deleteButton.addEventListener("click", api.deleteWork)
-    })
+/**
+ * Une super fonction qui initialise toutes les fonctionnalités nécessaires au bon fonctionnement du formulaire d'ajout de projets
+ */
+function initModalForm() {
+    checkFormValidity()
+    checkAndDisplayUploadFile()
+    generateCategorieOptions(api.categories)
+    handleSubmitEvent()
 }
 
-export function switchWindow(openingWindow, closingWindow) {
-    openingWindow.classList.add("active")
-    closingWindow.classList.remove("active")
-}
-
-export function switchModalWindow() {
-    // Afficher la fenêtre 2
-    document.getElementById("add-picture-button")
-    .addEventListener("click", () => {
-        switchWindow(modalWindow2, modalWindow1)
-    })
-    // Afficher la fenêtre 1
-    document.getElementById("modal-backward-button")
-    .addEventListener("click", () => {
-        switchWindow(modalWindow1, modalWindow2)
-    })
-}
-
-export function checkAndDisplayUploadFile() {
-    const fileUploadContainer = document.getElementById("file-upload-container")
-    document.getElementById("file-input")
-    .addEventListener('change', (event) => {
+/**
+ * Vérifie que le fichier téléchargé ne dépasse pas 4 Mo et affiche l'aperçu de l'image  
+ */
+function checkAndDisplayUploadFile() {
+    document.getElementById("file-input").addEventListener('change', (event) => {
         const file = event.target.files[0];
         if (file && file.size <= 4 * 1024 * 1024) {
             // Création de la fonction pour lire l'image uploadée
@@ -84,24 +171,32 @@ export function checkAndDisplayUploadFile() {
             // Changer d'image grâce au bouton
             const changePictureButton = document.querySelector(".image-container .delete-button")
             changePictureButton.addEventListener("click", () => {
-                addWorkForm.reset() 
                 resetUploadContainer()
+                addWorkForm.reset()
                 checkFormValidity()
             })
         } else {
-            displayErrorMessage("Impossible de charger le fichier car il est trop volumineux (4 Mo maximum)", fileUploadContainer)
+            displayErrorMessage("Impossible de charger le fichier car il est trop volumineux (4 Mo maximum)", document.getElementById("file-upload-container"))
         }
     });
 }
 
-export function resetUploadContainer() {
+/**
+ * Réinitialise l'affichage du champ "fichier" du formulaire
+ */
+function resetUploadContainer() {
     afterUploadContainer.style.display = "none"
     beforeUploadContent.forEach((element) => {
-        element.id !== "file-input" ? element.style.display = "block" : null;
+        element.style.display = "block"
     })
 }
 
-export function generateCategorieOptions(categories) {
+/**
+ * Génère les options disponibles dans la case "Catégorie" du formulaire
+ * 
+ * @param {Array} categories - Un tableau contenant l'ensemble des catégories des projets de l'architecte, récupéré à partir de l'API
+ */
+function generateCategorieOptions(categories) {
     const categorySelector = document.getElementById("category-select")
     categories.forEach((categorie) => {
         if (categorie.name === "Tous") {
@@ -115,36 +210,20 @@ export function generateCategorieOptions(categories) {
     })
 }
 
-export function checkFormValidity() {
-    const submitButton = document.getElementById("submit-button");
-    let allFilled = true;
-    addWorkInputs.forEach(input => {
-        if (!input.value) {
-            allFilled = false;
+/**
+ * Implémente l'écouteur d'événement "submit" sur le formulaire et gère l'affichage dynamique des nouveaux projets
+ */
+function handleSubmitEvent() {
+    // Gestion de l'envoi du formulaire pour ajouter des projets
+    addWorkForm.addEventListener("submit", async (event) => {
+        event.preventDefault()
+        let response = await api.postWork(addWorkForm)
+        if (response.status === 201) {
+            let updatedWorks = await api.getWorks()
+            displayWorks(updatedWorks)
+            resetModal()
         }
-    });
-    if (allFilled) {
-        submitButton.classList.remove("disabled-button")
-        submitButton.classList.add("active-button")
-    } else {
-        submitButton.classList.add("disabled-button")
-        submitButton.classList.remove("active-button")
-    } 
+    })
 }
 
-export function closeModal() {
-    const closeModalButtons = document.querySelectorAll(".js-modal-close");
-    // Fermer la modale en cliquant sur le bouton
-    closeModalButtons.forEach((button) => {
-        button.addEventListener("click", () => {
-            dialog.close()
-        })
-    })
-    // Fermer la modale en cliquant sur l'overlay
-    dialog.addEventListener('click', (event) => {
-    if (event.target === dialog) {
-        dialog.close();
-    }
-    });
-}
 
