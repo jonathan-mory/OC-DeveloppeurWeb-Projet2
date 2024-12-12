@@ -5,10 +5,7 @@ import { displayErrorMessage } from "./generic.js";
 const dialog = document.getElementById("modal");
 const modalWindow1 = document.getElementById("modal-window1")
 const modalWindow2 = document.getElementById("modal-window2")
-const addWorkForm = document.getElementById("add-project-form")
-export const addWorkInputs = addWorkForm.querySelectorAll("input[required], select");
-const beforeUploadContent = document.querySelectorAll("#file-upload-container div ~ *")
-const afterUploadContainer = document.querySelector(".image-container")
+export const addWorkInputs = modalWindow2.querySelectorAll("input[required], select");
 
 /**
  * Super fonction qui initialise la modale en y ajoutant toutes les fonctionnalités nécessaires (génération de la galerie des travaux à chaque ouverture, fonctionnalités génériques, gestion du formulaire d'ajout de projet)
@@ -128,6 +125,11 @@ function initModalGallery(works) {
  * Une super fonction qui initialise toutes les fonctionnalités nécessaires au bon fonctionnement du formulaire d'ajout de projets
  */
 function initModalForm() {
+
+    const addWorkForm = document.getElementById("add-project-form")
+    const beforeUploadContent = document.querySelectorAll("#file-upload-container div ~ *")
+    const afterUploadContainer = document.querySelector(".image-container")
+
     /**
      * Réinitialise l'affichage du champ "fichier" du formulaire
      */
