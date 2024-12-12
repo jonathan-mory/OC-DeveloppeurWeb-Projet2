@@ -2,16 +2,16 @@ import * as api from "./api.js"
 import { displayWorks } from "./index.js";
 import { displayErrorMessage } from "./generic.js";
 
-export const dialog = document.getElementById("modal");
-export const modalWindow1 = document.getElementById("modal-window1")
-export const modalWindow2 = document.getElementById("modal-window2")
-export const addWorkForm = document.getElementById("add-project-form")
+const dialog = document.getElementById("modal");
+const modalWindow1 = document.getElementById("modal-window1")
+const modalWindow2 = document.getElementById("modal-window2")
+const addWorkForm = document.getElementById("add-project-form")
 export const addWorkInputs = addWorkForm.querySelectorAll("input[required], select");
 const beforeUploadContent = document.querySelectorAll("#file-upload-container div ~ *")
 const afterUploadContainer = document.querySelector(".image-container")
 
 /**
- * Initialise la modale en y ajoutant toutes les fonctionnalités nécessaires (génération de la galerie des travaux à chaque ouverture, fonctionnalités génériques, gestion du formulaire d'ajout de projet)
+ * Super fonction qui initialise la modale en y ajoutant toutes les fonctionnalités nécessaires (génération de la galerie des travaux à chaque ouverture, fonctionnalités génériques, gestion du formulaire d'ajout de projet)
  */
 export function initModal() {
     const openModalButtons = document.querySelectorAll(".js-modal-open");
@@ -42,17 +42,6 @@ export function checkFormValidity() {
         submitButton.classList.add("disabled-button")
         submitButton.classList.remove("active-button")
     } 
-}
-
-/**
- * Super fonction qui est appelée après validation du formulaire. Elle réinitialise intégralement le formulaire, bascule sur la première fenêtre de la modale et ferme la modale.  
- */
-function resetModal() {
-    resetUploadContainer()
-    addWorkForm.reset()
-    checkFormValidity()
-    switchWindow(modalWindow1)
-    dialog.close()
 }
 
 /**
@@ -139,91 +128,110 @@ function initModalGallery(works) {
  * Une super fonction qui initialise toutes les fonctionnalités nécessaires au bon fonctionnement du formulaire d'ajout de projets
  */
 function initModalForm() {
+    /**
+     * Réinitialise l'affichage du champ "fichier" du formulaire
+     */
+    function resetUploadContainer() {
+        afterUploadContainer.style.display = "none"
+        beforeUploadContent.forEach((element) => {
+            element.style.display = "block"
+        })
+    }
+
+    /**
+     * Vérifie que le fichier téléchargé ne dépasse pas 4 Mo et affiche l'aperçu de l'image  
+     */
+    function checkAndDisplayUploadFile() {
+        document.getElementById("file-input").addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (file && file.size <= 4 * 1024 * 1024) {
+                // Création de la fonction pour lire l'image uploadée
+                const reader = new FileReader()
+                reader.onload = function(e) {
+                    const preview = document.getElementById("preview")
+                    preview.src = e.target.result
+                }
+                // Cacher les éléments HTML permettant d'uploader une image
+                beforeUploadContent.forEach((element) => {
+                    element.style.display = "none"
+                })
+                // Supprimer le message d'erreur lorsque l'on ré-upload une nouvelle image
+                const errorMessage = document.querySelector(".error-message") 
+                errorMessage ? errorMessage.remove() : null
+                // Afficher l'image uploadée et le bouton pour changer de fichier
+                afterUploadContainer.style.display = "block"
+                reader.readAsDataURL(file)
+                // Changer d'image grâce au bouton
+                const changePictureButton = document.querySelector(".image-container .delete-button")
+                changePictureButton.addEventListener("click", () => {
+                    resetUploadContainer()
+                    addWorkForm.reset()
+                    checkFormValidity()
+                })
+            } else {
+                displayErrorMessage("Impossible de charger le fichier car il est trop volumineux (4 Mo maximum)", document.getElementById("file-upload-container"))
+            }
+        });
+    }
+
+    /**
+     * Génère les options disponibles dans la case "Catégorie" du formulaire
+     * 
+     * @param {Array} categories - Un tableau contenant l'ensemble des catégories des projets de l'architecte, récupéré à partir de l'API
+     */
+    function generateCategorieOptions(categories) {
+        const categorySelector = document.getElementById("category-select")
+        categories.forEach((categorie) => {
+            if (categorie.name === "Tous") {
+                return
+            } else {
+                const categoryOption = document.createElement("option")
+                categoryOption.value = parseInt(categorie.id)
+                categoryOption.text = categorie.name
+                categorySelector.appendChild(categoryOption)
+            }
+        })
+    }
+
+    /**
+     * Implémente l'écouteur d'événement "submit" sur le formulaire et gère l'affichage dynamique des nouveaux projets
+     */
+    function handleSubmitEvent() {
+        /**
+             * Super fonction qui est appelée après validation du formulaire. Elle réinitialise intégralement le formulaire, bascule sur la première fenêtre de la modale et ferme la modale.  
+             */
+        function resetModal() {
+            resetUploadContainer()
+            addWorkForm.reset()
+            checkFormValidity()
+            switchWindow(modalWindow1)
+            dialog.close()
+        }
+
+        // Gestion de l'envoi du formulaire pour ajouter des projets
+        addWorkForm.addEventListener("submit", async (event) => {
+            event.preventDefault()
+            let response = await api.postWork(addWorkForm)
+            if (response.status === 201) {
+                let updatedWorks = await api.getWorks()
+                displayWorks(updatedWorks)
+                resetModal()
+            }
+        })
+    }
+
     checkFormValidity()
     checkAndDisplayUploadFile()
     generateCategorieOptions(api.categories)
     handleSubmitEvent()
 }
 
-/**
- * Vérifie que le fichier téléchargé ne dépasse pas 4 Mo et affiche l'aperçu de l'image  
- */
-function checkAndDisplayUploadFile() {
-    document.getElementById("file-input").addEventListener('change', (event) => {
-        const file = event.target.files[0];
-        if (file && file.size <= 4 * 1024 * 1024) {
-            // Création de la fonction pour lire l'image uploadée
-            const reader = new FileReader()
-            reader.onload = function(e) {
-                const preview = document.getElementById("preview")
-                preview.src = e.target.result
-            }
-            // Cacher les éléments HTML permettant d'uploader une image
-            beforeUploadContent.forEach((element) => {
-                element.style.display = "none"
-            })
-            // Supprimer le message d'erreur lorsque l'on ré-upload une nouvelle image
-            const errorMessage = document.querySelector(".error-message") 
-            errorMessage ? errorMessage.remove() : null
-            // Afficher l'image uploadée et le bouton pour changer de fichier
-            afterUploadContainer.style.display = "block"
-            reader.readAsDataURL(file)
-            // Changer d'image grâce au bouton
-            const changePictureButton = document.querySelector(".image-container .delete-button")
-            changePictureButton.addEventListener("click", () => {
-                resetUploadContainer()
-                addWorkForm.reset()
-                checkFormValidity()
-            })
-        } else {
-            displayErrorMessage("Impossible de charger le fichier car il est trop volumineux (4 Mo maximum)", document.getElementById("file-upload-container"))
-        }
-    });
-}
 
-/**
- * Réinitialise l'affichage du champ "fichier" du formulaire
- */
-function resetUploadContainer() {
-    afterUploadContainer.style.display = "none"
-    beforeUploadContent.forEach((element) => {
-        element.style.display = "block"
-    })
-}
 
-/**
- * Génère les options disponibles dans la case "Catégorie" du formulaire
- * 
- * @param {Array} categories - Un tableau contenant l'ensemble des catégories des projets de l'architecte, récupéré à partir de l'API
- */
-function generateCategorieOptions(categories) {
-    const categorySelector = document.getElementById("category-select")
-    categories.forEach((categorie) => {
-        if (categorie.name === "Tous") {
-            return
-        } else {
-            const categoryOption = document.createElement("option")
-            categoryOption.value = parseInt(categorie.id)
-            categoryOption.text = categorie.name
-            categorySelector.appendChild(categoryOption)
-        }
-    })
-}
 
-/**
- * Implémente l'écouteur d'événement "submit" sur le formulaire et gère l'affichage dynamique des nouveaux projets
- */
-function handleSubmitEvent() {
-    // Gestion de l'envoi du formulaire pour ajouter des projets
-    addWorkForm.addEventListener("submit", async (event) => {
-        event.preventDefault()
-        let response = await api.postWork(addWorkForm)
-        if (response.status === 201) {
-            let updatedWorks = await api.getWorks()
-            displayWorks(updatedWorks)
-            resetModal()
-        }
-    })
-}
+
+
+
+
 
 
