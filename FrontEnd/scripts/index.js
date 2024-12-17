@@ -15,6 +15,8 @@ export function displayWorks(works) {
 
         const figure = document.createElement("figure")
         figure.dataset.id = work.id
+        figure.className = "gallery-element"
+        parseInt(figure.dataset.id)
 
         figure.appendChild(img)
         figure.appendChild(figcaption)
@@ -84,8 +86,4 @@ if (sessionStorage.token) {
     displayEditionBar()
     displayModifyButton()
     modal.initModal()
-    // Ajouter des écouteurs d'événements à chaque champ requis
-    modal.addWorkInputs.forEach(input => {
-        input.addEventListener("input", modal.checkFormValidity);
-    });
 }

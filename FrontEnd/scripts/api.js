@@ -46,27 +46,31 @@ export async function deleteWork(workId) {
         const response = await fetch(`${worksURL}/${workId}`, {
             method: "DELETE",
             headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
             }
-        })
+        });
         if (response.ok) {
-            const works = document.querySelectorAll("figure")
-            works.forEach((work) => {
-                work.dataset.id === workId ? work.remove() : null
-            })
+            const deletedWorks = document.querySelectorAll(`figure[data-id="${workId}"]`);
+            if (deletedWorks) {
+                deletedWorks.forEach((figure) => {
+                    figure.remove()
+                });
+            } else {
+                console.warn("Élément non trouvé dans le DOM.");
+            }
         } else {
-            console.error("Erreur lors de la suppression de l\'élément");
+            console.error("Erreur lors de la suppression de l'élément, statut HTTP:", response.status);
         }
     } catch (error) {
-        console.error("Erreur réseau ou autre problème", error)
+        console.error("Erreur réseau ou autre problème:", error);
     }
 }
 
 export async function postWork(form) {
     try {
         const data = new FormData(form)
-        const response = fetch(worksURL, {
+        const response = await fetch(worksURL, {
             method: "POST",
             headers: {
                 "Accept": "application/json",

@@ -5,10 +5,9 @@ import { displayErrorMessage } from "./generic.js";
 const dialog = document.getElementById("modal");
 const modalWindow1 = document.getElementById("modal-window1")
 const modalWindow2 = document.getElementById("modal-window2")
-export const addWorkInputs = modalWindow2.querySelectorAll("input[required], select");
 
 /**
- * Super fonction qui initialise la modale en y ajoutant toutes les fonctionnalités nécessaires (génération de la galerie des travaux à chaque ouverture, fonctionnalités génériques, gestion du formulaire d'ajout de projet)
+ * Super fonction qui initialise la modale en y ajoutant toutes les fonctionnalités nécessaires (génération de la galerie des travaux à chaque ouverture, fonctionnalités génériques, gestion du formulaire d'ajout de projet).
  */
 export function initModal() {
     const openModalButtons = document.querySelectorAll(".js-modal-open");
@@ -24,31 +23,13 @@ export function initModal() {
     initModalForm()
 }
 
-export function checkFormValidity() {
-    const submitButton = document.getElementById("submit-button");
-    let allFilled = true;
-    addWorkInputs.forEach(input => {
-        if (!input.value) {
-            allFilled = false;
-        }
-    });
-    if (allFilled) {
-        submitButton.classList.remove("disabled-button")
-        submitButton.classList.add("active-button")
-    } else {
-        submitButton.classList.add("disabled-button")
-        submitButton.classList.remove("active-button")
-    } 
-}
-
 /**
  * Change l'affichage de la modale en fonction de la fenêtre à afficher
  * 
- * @param {HTMLDialogElement} idModalWindow - La fenêtre de modale que l'on souhaite afficher
+ * @param {HTMLDialogElement} idModalWindow - La fenêtre de modale que l'on souhaite afficher.
  */
 function switchWindow(idModalWindow) {
-    dialog.querySelectorAll(".window")
-    .forEach((window) => {
+    dialog.querySelectorAll(".window").forEach((window) => {
         window === idModalWindow ? window.classList.add("active") : window.classList.remove("active")
     })
 }
@@ -81,9 +62,9 @@ function initModalSettings() {
 }
 
 /**
- * Affiche les projets dans la modale et implémente l'écouteur d'événement sur chaque bouton pour supprimer des projets
+ * Affiche les projets dans la modale et implémente l'écouteur d'événement sur chaque bouton pour supprimer des projets.
  * 
- * @param {Array} works - Un tableau de projets récupéré à partir de la requête "Get Works" à l'API
+ * @param {Array} works - Un tableau de projets récupéré à partir de la requête "Get Works" à l'API.
  */
 function initModalGallery(works) {
     const modalGallery = document.querySelector(".modal-gallery");
@@ -114,24 +95,32 @@ function initModalGallery(works) {
         // Ajout de la fonction de suppression d'un projet à chaque bouton
         button.addEventListener("click", async () => {
             api.deleteWork(work.id)
-            const updatedWorks = await api.getWorks()
-            displayWorks(updatedWorks)
-            initModalGallery(updatedWorks)
         })
     });
 }
 
 /**
- * Une super fonction qui initialise toutes les fonctionnalités nécessaires au bon fonctionnement du formulaire d'ajout de projets
+ * Une super fonction qui initialise toutes les fonctionnalités nécessaires au bon fonctionnement du formulaire d'ajout de projets.
  */
 function initModalForm() {
 
     const addWorkForm = document.getElementById("add-project-form")
+    const addWorkInputs = modalWindow2.querySelectorAll("input[required], select");
     const beforeUploadContent = document.querySelectorAll("#file-upload-container div ~ *")
     const afterUploadContainer = document.querySelector(".image-container")
 
     /**
-     * Réinitialise l'affichage du champ "fichier" du formulaire
+     * Affiche la classe "active" ou "disabled" au bouton de validation du formulaire, en fonction de si tous les champs sont remplis ou non.
+     */
+    function checkFormValidity() {
+        const submitButton = document.getElementById("submit-button");
+        const allFilled = Array.from(addWorkInputs).every(input => input.value.trim());
+        submitButton.classList.toggle("active-button", allFilled);
+        submitButton.classList.toggle("disabled-button", !allFilled);
+    }
+
+    /**
+     * Réinitialise l'affichage du champ "fichier" du formulaire.
      */
     function resetUploadContainer() {
         afterUploadContainer.style.display = "none"
@@ -141,7 +130,7 @@ function initModalForm() {
     }
 
     /**
-     * Vérifie que le fichier téléchargé ne dépasse pas 4 Mo et affiche l'aperçu de l'image  
+     * Vérifie que le fichier téléchargé ne dépasse pas 4 Mo et affiche l'aperçu de l'image.  
      */
     function checkAndDisplayUploadFile() {
         document.getElementById("file-input").addEventListener('change', (event) => {
@@ -177,9 +166,9 @@ function initModalForm() {
     }
 
     /**
-     * Génère les options disponibles dans la case "Catégorie" du formulaire
+     * Génère les options disponibles dans la case "Catégorie" du formulaire.
      * 
-     * @param {Array} categories - Un tableau contenant l'ensemble des catégories des projets de l'architecte, récupéré à partir de l'API
+     * @param {Array} categories - Un tableau contenant l'ensemble des catégories des projets de l'architecte, récupéré à partir de l'API.
      */
     function generateCategorieOptions(categories) {
         const categorySelector = document.getElementById("category-select")
@@ -196,12 +185,12 @@ function initModalForm() {
     }
 
     /**
-     * Implémente l'écouteur d'événement "submit" sur le formulaire et gère l'affichage dynamique des nouveaux projets
+     * Implémente l'écouteur d'événement "submit" sur le formulaire et gère l'affichage dynamique des nouveaux projets.
      */
     function handleSubmitEvent() {
         /**
-             * Super fonction qui est appelée après validation du formulaire. Elle réinitialise intégralement le formulaire, bascule sur la première fenêtre de la modale et ferme la modale.  
-             */
+         * Super fonction qui est appelée après validation du formulaire. Elle réinitialise intégralement le formulaire, bascule sur la première fenêtre de la modale et ferme la modale.  
+         */
         function resetModal() {
             resetUploadContainer()
             addWorkForm.reset()
@@ -213,9 +202,9 @@ function initModalForm() {
         // Gestion de l'envoi du formulaire pour ajouter des projets
         addWorkForm.addEventListener("submit", async (event) => {
             event.preventDefault()
-            let response = await api.postWork(addWorkForm)
-            if (response.status === 201) {
-                let updatedWorks = await api.getWorks()
+            const response = await api.postWork(addWorkForm)
+            if (response.ok) {
+                const updatedWorks = await api.getWorks()
                 displayWorks(updatedWorks)
                 resetModal()
             }
@@ -223,6 +212,12 @@ function initModalForm() {
     }
 
     checkFormValidity()
+    // Ajouter des écouteurs d'événements à chaque champ requis.
+    addWorkInputs.forEach(input => {
+        input.addEventListener("input", () => {
+            checkFormValidity()
+        });
+    });
     checkAndDisplayUploadFile()
     generateCategorieOptions(api.categories)
     handleSubmitEvent()
