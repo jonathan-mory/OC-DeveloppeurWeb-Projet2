@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
 	<title>Login</title>
@@ -8,10 +8,10 @@
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Work+Sans&display=swap" rel="stylesheet">
 	<meta name="description" content="">
-	<link rel="stylesheet" href="./assets/main.css">
-	<link rel="stylesheet" href="./assets/header.css">
-	<link rel="stylesheet" href="./assets/style.css">
+	<link rel="stylesheet" href="./css/style.css">
+    <link rel="stylesheet" href="./css/pages/login.css">
     <script type="module" src="scripts/login.js" defer></script>
+    <script src="https://kit.fontawesome.com/e99cd9deac.js" crossorigin="anonymous"></script>
 </head>
 <body>
     <header>
@@ -19,10 +19,10 @@
 			<a href="index.html"><h1>Sophie Bluel <span>Architecte d'intérieur</span></h1></a>
 			<nav>
 				<ul>
-					<a href="index.html#portfolio"><li>projets</li></a>
-					<a href="index.html#contact"><li>contact</li></a>
-					<a href="login.html" id="login"><li>login</li></a>
-					<li><img src="./assets/icons/instagram.png" alt="Instagram"></li>
+					<li><a href="index.html#portfolio">Projets</a></li>
+					<li><a href="index.html#contact">Contact</a></li>
+					<li><a href="login.html" id="login">Login</a></li>
+					<li id="instagram-container"><img src="./assets/icons/instagram.png" alt="Instagram"></li>
 				</ul>
 			</nav>
 		</div>
@@ -31,9 +31,9 @@
         <h2>Log In</h2>
         <form action="" id="login-form">
             <label for="login-email">E-mail</label>
-            <input type="email" name="email" id="login-email" autocomplete="email">
+            <input type="email" name="email" id="login-email" autocomplete="email" required>
             <label for="login-password">Mot de passe</label>
-            <input type="password" name="password" id="login-password">
+            <input type="password" name="password" id="login-password" required>
             <input type="submit" value="Se connecter" id="login-submit">
         </form>
         <a href="">Mot de passe oublié</a>

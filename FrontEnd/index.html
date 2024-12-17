@@ -8,9 +8,9 @@
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Work+Sans&display=swap" rel="stylesheet">
 	<meta name="description" content="">
-	<link rel="stylesheet" href="./assets/main.css">
-	<link rel="stylesheet" href="./assets/header.css">
-	<link rel="stylesheet" href="./assets/style.css">
+	<link rel="stylesheet" href="./css/style.css">
+	<link rel="stylesheet" href="./css/pages/index.css">
+	<link rel="stylesheet" href="./css/pages/modal.css">
 	<script type="module" src="scripts/index.js" defer></script>
 	<script src="https://kit.fontawesome.com/e99cd9deac.js" crossorigin="anonymous"></script>
 </head>
@@ -23,7 +23,7 @@
 					<li><a href="#portfolio">Projets</a></li>
 					<li><a href="#contact">Contact</a></li>
 					<li><a href="login.html" id="login">Login</a></li>
-					<li><img src="./assets/icons/instagram.png" alt="Instagram"></li>
+					<li id="instagram-container"><img src="./assets/icons/instagram.png" alt="Instagram"></li>
 				</ul>
 			</nav>
 		</div>
@@ -46,7 +46,7 @@
 			</div>
 			<dialog id="modal">
 				<div id="modal-window1" class="window active">
-					<button id="modal-close-button" class="js-modal-close" aria-label="Fermer la fenêtre"><i class="fa-solid fa-xmark"></i></button>
+					<button class="js-modal-close" aria-label="Fermer la fenêtre"><i class="fa-solid fa-xmark"></i></button>
 					<h3>Galerie photo</h3>
 					<div class="modal-gallery"></div>
 					<div class="button-container">
@@ -55,11 +55,11 @@
 				</div>
 				<div id="modal-window2" class="window">
 					<button id="modal-backward-button" aria-label="Revenir sur la fenêtre précédente"><i class="fa-solid fa-arrow-left"></i></button>
-					<button id="modal-close-button" class="js-modal-close" aria-label="Fermer la fenêtre"><i class="fa-solid fa-xmark"></i></button>
+					<button class="js-modal-close" aria-label="Fermer la fenêtre"><i class="fa-solid fa-xmark"></i></button>
 					<h3>Ajout photo</h3>
 					<form action="" method="post" id="add-project-form" name="add-project-form">
 						<div id="file-upload-container">
-							<div class="image-container" style="display: none;">
+							<div class="image-container">
 								<img id="preview" src="" alt="Aperçu de l'image">
 								<button class="delete-button" aria-label="Supprimer l'image"><i class="fa-solid fa-trash-can" aria-hidden="true"></i></button>
 							</div>
@@ -68,9 +68,9 @@
 							<label for="file-input" id="file-label">+ Ajouter photo</label>
 							<span>jpg, png : 4mo max</span>
 						</div>						  
-						<label for="title">Titre</label>
+						<label for="title-input">Titre</label>
 						<input type="text" name="title" title="Titre" id="title-input" required>
-						<label for="category">Catégorie</label>
+						<label for="category-select">Catégorie</label>
 						<select name="category" title="Catégorie" id="category-select" required>
 							<option value="" disabled selected hidden></option>
 						</select>
@@ -90,7 +90,7 @@
 			<p>Vous avez un projet ? Discutons-en !</p>
 			<form action="#" method="post">
 				<label for="name">Nom</label>
-				<input type="text" name="name" id="name">
+				<input type="text" name="name" id="name" autocomplete="name">
 				<label for="email">Email</label>
 				<input type="email" name="email" id="email" autocomplete="email">
 				<label for="message">Message</label>

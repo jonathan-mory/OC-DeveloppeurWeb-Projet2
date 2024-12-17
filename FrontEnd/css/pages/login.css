@@ -1,0 +1,15 @@
+
+/* LOGIN STYLE */
+
+#login-container {
+	width: fit-content;
+	margin: 150px auto;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+#login-container a {
+	margin: 30px auto 0 auto;
+}
+
