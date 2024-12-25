@@ -6,10 +6,10 @@ const token = sessionStorage.getItem("token")
 export async function getWorks() {
     try {
         const response = await fetch(worksURL);
-        const data = await response.json();
-        return data;
+        return await response.json();
     } catch (error) {
-        console.error("Erreur lors de la récupération des projets :", error);
+        console.error("Erreur du réseau lors de la récupération des projets :", error);
+        window.alert("Erreur du réseau lors de la récupération des projets :");
         return null;
     }
 }
@@ -24,7 +24,9 @@ export async function getCategories() {
         });
         return data;
     } catch (error) {
-        console.error("Erreur lors de la récupération des catégories :", error)
+        console.error("Erreur du réseau lors de la récupération des catégories :", error);
+        window.alert("Erreur du réseau lors de la récupération des catégories :");
+        return null;
     }
 }
 
@@ -59,11 +61,13 @@ export async function deleteWork(workId) {
             } else {
                 console.warn("Élément non trouvé dans le DOM.");
             }
-        } else {
-            console.error("Erreur lors de la suppression de l'élément, statut HTTP:", response.status);
+        } else if (response.status === 401) {
+            window.alert("Accès non autorisé pour supprimer le projet.")
+            console.error("Erreur lors de la suppression du projet, statut HTTP:", response.status);
         }
     } catch (error) {
-        console.error("Erreur réseau ou autre problème:", error);
+        window.alert("Erreur du réseau lors de la suppression du projet")
+        console.error("Erreur du réseau lors de la suppression du projet:", error);
     }
 }
 
@@ -78,9 +82,10 @@ export async function postWork(form) {
             },
             body: data
         })
-        return response
+        return await response.json()
     } catch (error) {
-        console.error("Erreur réseau ou autre problème", error)
+        console.error("Erreur du réseau lors de la publication du projet", error)
+        window.alert("Erreur du réseau lors de la publication du projet")
     }
 }
 

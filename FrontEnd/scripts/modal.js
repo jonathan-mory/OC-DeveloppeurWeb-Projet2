@@ -203,7 +203,7 @@ function initModalForm() {
         addWorkForm.addEventListener("submit", async (event) => {
             event.preventDefault()
             const response = await api.postWork(addWorkForm)
-            if (response.ok) {
+            if (response) {
                 const updatedWorks = await api.getWorks()
                 displayWorks(updatedWorks)
                 resetModal()

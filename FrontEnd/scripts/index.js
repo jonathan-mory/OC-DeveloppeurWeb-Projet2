@@ -64,7 +64,7 @@ function displayEditionBar() {
     headerTag.insertBefore(editionModeDiv, headerDiv);
 }
 
-function displayModifyButton(params) {
+function displayModifyButton() {
     const portfolioTitleDiv = document.querySelector(".portfolio-title");
     portfolioTitleDiv.innerHTML = `
         <h2> Mes Projets </h2>
